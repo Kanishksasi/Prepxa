@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Prepxa</title>
+  <meta name="description" content="How Prepxa (Bruxel Academy LLC) collects, uses, and protects your information." />
+  <meta name="theme-color" content="#0B0D14" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='26' fill='%234F46E5'/><text x='50' y='73' font-size='62' font-family='Helvetica,Arial,sans-serif' font-weight='bold' fill='white' text-anchor='middle'>P</text></svg>" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   Prepxa — site-wide styles (inlined for portability)
+   Dark, 3D-forward aesthetic; palette mirrors the iOS app:
+   indigo #4F46E5/#818CF8 · amber #F59E0B · bg #0B0D14
+   ============================================================ */
+:root {
+  --bg:#0B0D14; --bg-deep:#07080D; --surface:#151823; --surface-2:#1C1F2A;
+  --border:rgba(255,255,255,0.08); --text:#F3F4F6; --text-muted:#9CA3AF; --text-faint:#6B7280;
+  --indigo:#4F46E5; --indigo-bright:#818CF8; --amber:#F59E0B; --success:#34D399;
+  --radius:16px; --radius-lg:24px;
+  --font-head:"Sora",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --font-mono:"Space Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:16px; line-height:1.7; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+::selection { background:var(--indigo); color:#fff; }
+a { color:var(--indigo-bright); text-decoration:none; }
+a:hover { color:#A5B4FC; }
+.kicker { font-family:var(--font-mono); font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--indigo-bright); display:block; margin-bottom:18px; }
+.nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:20px 40px; background:linear-gradient(rgba(11,13,20,0.85),rgba(11,13,20,0)); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+.nav-logo { font-family:var(--font-head); font-weight:800; font-size:20px; letter-spacing:0.02em; color:var(--text); }
+.nav-logo span { color:var(--indigo-bright); }
+.nav-links { display:flex; gap:32px; align-items:center; }
+.nav-links a { font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-muted); transition:color 0.2s; }
+.nav-links a:hover { color:var(--text); }
+.btn { display:inline-block; font-family:var(--font-head); font-weight:700; font-size:14px; padding:12px 26px; border-radius:999px; background:var(--indigo); color:#fff !important; border:none; cursor:pointer; transition:transform 0.2s,box-shadow 0.2s,background 0.2s; }
+.btn:hover { background:#5B54F0; transform:translateY(-2px); box-shadow:0 8px 32px rgba(79,70,229,0.45); }
+.btn.ghost { background:transparent; border:1px solid var(--border); color:var(--text) !important; }
+.btn.ghost:hover { border-color:var(--indigo-bright); box-shadow:none; }
+.hero { position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+#scene { position:fixed; inset:0; z-index:0; pointer-events:none; }
+.hero-content { position:relative; z-index:2; text-align:center; padding:0 24px; max-width:860px; }
+h1 { font-family:var(--font-head); font-size:clamp(44px,7.5vw,84px); font-weight:800; line-height:1.05; letter-spacing:-0.03em; margin-bottom:24px; }
+h1 .grad { background:linear-gradient(120deg,var(--indigo-bright),var(--amber)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.hero-sub { font-size:clamp(16px,2vw,20px); color:var(--text-muted); max-width:560px; margin:0 auto 40px; }
+.hero-ctas { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.scroll-cue { position:absolute; bottom:36px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--text-faint); animation:cue 2.4s ease-in-out infinite; }
+@keyframes cue { 0%,100%{ transform:translate(-50%,0); opacity:0.6; } 50%{ transform:translate(-50%,8px); opacity:1; } }
+section { position:relative; z-index:2; padding:130px 24px; }
+.wrap { max-width:1080px; margin:0 auto; }
+.wrap-narrow { max-width:760px; margin:0 auto; }
+h2 { font-family:var(--font-head); font-size:clamp(30px,4.5vw,48px); font-weight:800; letter-spacing:-0.02em; line-height:1.15; margin-bottom:18px; }
+.section-sub { color:var(--text-muted); max-width:600px; margin-bottom:56px; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+.stat { background:rgba(21,24,35,0.75); backdrop-filter:blur(8px); padding:36px 28px; text-align:center; }
+.stat b { display:block; font-family:var(--font-head); font-size:34px; font-weight:800; color:var(--indigo-bright); }
+.stat span { font-family:var(--font-mono); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint); }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; }
+.card { background:rgba(21,24,35,0.75); backdrop-filter:blur(8px); border:1px solid var(--border); border-radius:var(--radius-lg); padding:36px 30px; transition:transform 0.25s,border-color 0.25s; }
+.card:hover { transform:translateY(-6px); border-color:rgba(129,140,248,0.4); }
+.card .icon { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:22px; background:rgba(79,70,229,0.16); margin-bottom:22px; }
+.card h3 { font-family:var(--font-head); font-size:19px; font-weight:700; margin-bottom:10px; }
+.card p { color:var(--text-muted); font-size:15px; }
+.steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; counter-reset:step; }
+.step { position:relative; padding:36px 30px; border:1px solid var(--border); border-radius:var(--radius-lg); background:rgba(21,24,35,0.6); }
+.step::before { counter-increment:step; content:"0" counter(step); font-family:var(--font-mono); font-size:13px; letter-spacing:0.2em; color:var(--amber); display:block; margin-bottom:16px; }
+.step h3 { font-family:var(--font-head); font-size:18px; font-weight:700; margin-bottom:8px; }
+.step p { color:var(--text-muted); font-size:15px; }
+.split { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
+@media (max-width:820px) { .split { grid-template-columns:1fr; gap:36px; } }
+.check-list { list-style:none; margin-top:28px; }
+.check-list li { padding-left:34px; position:relative; margin-bottom:16px; color:var(--text-muted); }
+.check-list li::before { content:"✓"; position:absolute; left:0; color:var(--success); font-weight:700; }
+.earn-card { background:linear-gradient(145deg,rgba(79,70,229,0.25),rgba(21,24,35,0.9)); border:1px solid rgba(129,140,248,0.3); border-radius:var(--radius-lg); padding:44px 38px; text-align:center; }
+.earn-card .big { font-family:var(--font-head); font-size:72px; font-weight:800; background:linear-gradient(120deg,var(--indigo-bright),var(--amber)); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1.1; }
+.earn-card .mono { font-family:var(--font-mono); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--text-faint); }
+details { border:1px solid var(--border); border-radius:var(--radius); background:rgba(21,24,35,0.6); margin-bottom:12px; overflow:hidden; }
+summary { cursor:pointer; padding:22px 26px; font-family:var(--font-head); font-weight:600; font-size:16px; list-style:none; position:relative; }
+summary::-webkit-details-marker { display:none; }
+summary::after { content:"+"; position:absolute; right:26px; color:var(--indigo-bright); font-size:20px; transition:transform 0.2s; }
+details[open] summary::after { transform:rotate(45deg); }
+details .answer { padding:0 26px 22px; color:var(--text-muted); font-size:15px; }
+.cta-banner { text-align:center; border:1px solid rgba(129,140,248,0.3); border-radius:var(--radius-lg); padding:90px 32px; background:radial-gradient(ellipse 60% 90% at 50% 0%,rgba(79,70,229,0.28),transparent),rgba(21,24,35,0.7); }
+footer { position:relative; z-index:2; border-top:1px solid var(--border); padding:64px 40px 48px; background:var(--bg-deep); }
+.foot-grid { max-width:1080px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr; gap:48px; }
+@media (max-width:700px) { .foot-grid { grid-template-columns:1fr; } }
+.foot-grid h4 { font-family:var(--font-mono); font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--text-faint); margin-bottom:18px; }
+.foot-grid a { display:block; color:var(--text-muted); font-size:14px; margin-bottom:10px; }
+.foot-grid a:hover { color:var(--text); }
+.foot-brand p { color:var(--text-faint); font-size:13px; max-width:320px; margin-top:12px; }
+.copyright { max-width:1080px; margin:48px auto 0; padding-top:24px; border-top:1px solid var(--border); font-family:var(--font-mono); font-size:11px; letter-spacing:0.12em; color:var(--text-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.legal-body { padding:160px 24px 100px; }
+.legal-body h1 { font-size:clamp(34px,5vw,52px); }
+.legal-meta { font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; color:var(--text-faint); margin-bottom:48px; text-transform:uppercase; }
+.legal-body h2 { font-size:22px; margin:48px 0 14px; padding-top:24px; border-top:1px solid var(--border); }
+.legal-body h3 { font-family:var(--font-head); font-size:17px; margin:26px 0 8px; }
+.legal-body p, .legal-body li { color:var(--text-muted); font-size:15.5px; margin-bottom:14px; }
+.legal-body ul { padding-left:22px; margin-bottom:16px; }
+.legal-body strong { color:var(--text); }
+.callout { border:1px solid rgba(245,158,11,0.35); background:rgba(245,158,11,0.08); border-radius:var(--radius); padding:20px 24px; margin:24px 0; }
+.callout p { margin:0; color:var(--text); font-size:14.5px; }
+.fine-print { margin-top:56px; padding-top:24px; border-top:1px solid var(--border); font-size:13px; color:var(--text-faint); font-style:italic; }
+.reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease,transform 0.7s ease; }
+.reveal.in { opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce) { .reveal { opacity:1; transform:none; transition:none; } .scroll-cue { animation:none; } html { scroll-behavior:auto; } }
+@media (max-width:640px) { .nav { padding:16px 20px; } .nav-links a:not(.btn) { display:none; } section { padding:90px 20px; } }
+
+/* ---------- polish layer ---------- */
+section[id], header[id] { scroll-margin-top: 88px; }
+.hero { overflow: hidden; }
+.hero::before {
+  content:""; position:absolute; inset:-12% 0 0; z-index:1; pointer-events:none;
+  background:
+    radial-gradient(46% 42% at 50% 34%, rgba(99,91,255,0.30), transparent 72%),
+    radial-gradient(34% 40% at 76% 66%, rgba(245,158,11,0.13), transparent 70%),
+    radial-gradient(42% 50% at 20% 72%, rgba(79,70,229,0.18), transparent 72%);
+}
+a:focus-visible, .btn:focus-visible, summary:focus-visible, details:focus-within summary {
+  outline: 2px solid var(--indigo-bright); outline-offset: 3px; border-radius: 6px;
+}
+.nav-logo span { transition: color .2s; }
+.nav-logo:hover span { color: var(--amber); }
+.skip-link {
+  position:absolute; left:16px; top:-48px; z-index:200;
+  background:var(--indigo); color:#fff; padding:10px 18px; border-radius:10px;
+  font-family:var(--font-head); font-weight:700; font-size:14px; transition:top .2s;
+}
+.skip-link:focus { top:16px; color:#fff; }
+
+/* ---------- legal pages: shared 3D background + readability scrim ---------- */
+body.legal::before { content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
+  background: radial-gradient(125% 85% at 50% 0%, rgba(11,13,20,0.55), rgba(11,13,20,0.88) 58%, rgba(11,13,20,0.96)); }
+body.legal .legal-body { position:relative; z-index:2; }
+  </style>
+</head>
+<body class="legal">
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <nav class="nav">
+    <a class="nav-logo" href="index.html">Prep<span>xa</span></a>
+    <div class="nav-links">
+      <a href="support.html">Support</a>
+      <a href="terms.html">Terms</a>
+      <a class="btn" href="index.html#download">Get the App</a>
+    </div>
+  </nav>
+
+  <main class="legal-body" id="main">
+    <div class="wrap-narrow">
+      <span class="kicker">Legal</span>
+      <h1>Privacy Policy</h1>
+      <p class="legal-meta">Effective June 12, 2026 · Bruxel Academy LLC</p>
+
+      <p>This Privacy Policy explains how Bruxel Academy LLC ("Prepxa," "we," "us," or "our") collects, uses, shares, and protects information when you use the Prepxa mobile application and related services (the "Service"). By using the Service, you agree to this Privacy Policy.</p>
+
+      <h2>1. Information We Collect</h2>
+      <h3>Information you provide</h3>
+      <ul>
+        <li><strong>Account information</strong> — name, email address, password (stored as a salted hash; we never see your plaintext password), and role (student or tutor).</li>
+        <li><strong>Student profile</strong> — grade level, target exam, and optional goal scores.</li>
+        <li><strong>Tutor profile</strong> — biography, education, test scores, subjects taught, hourly rate, and university affiliation.</li>
+        <li><strong>Profile photo</strong> — if you choose to upload one.</li>
+        <li><strong>Messages</strong> — the contents of messages you send through the Service (see Section 4 regarding monitoring).</li>
+        <li><strong>Session information</strong> — bookings, schedules, durations, and reviews you write.</li>
+      </ul>
+      <h3>Information collected automatically</h3>
+      <p>Basic device and usage information necessary to operate the Service (e.g., authentication tokens and timestamps).</p>
+      <h3>Payment information</h3>
+      <p>Payments are processed by <strong>Stripe, Inc.</strong> We never receive or store your full card number. We retain only transaction records (amounts, status, and Stripe identifiers). Stripe's handling of your data is governed by the <a href="https://stripe.com/privacy" rel="noopener">Stripe Privacy Policy</a>. Tutors who enroll in payouts provide identity and banking information directly to Stripe, not to us.</p>
+      <p>We do <strong>not</strong> collect precise location data, contacts, browsing history, or advertising identifiers. We do <strong>not</strong> sell your personal information, and we do not use it for third-party advertising.</p>
+
+      <h2>2. How We Use Information</h2>
+      <p>We use your information to: (a) create and operate your account; (b) match students with tutors and facilitate sessions; (c) process payments and payouts; (d) deliver messages between users; (e) enforce our Terms of Service and platform safety rules; (f) respond to support requests; and (g) comply with legal obligations.</p>
+
+      <h2>3. Children and Minors</h2>
+      <p>The Service is intended for users <strong>13 years of age and older</strong>. We do not knowingly collect personal information from children under 13. If we learn that a child under 13 has created an account, we will delete it.</p>
+      <p>If you are under 18, you may use the Service only with the consent and involvement of a parent or legal guardian, who must agree to our Terms of Service on your behalf. Parents or guardians may contact <a href="mailto:kanishksasi1@gmail.com">kanishksasi1@gmail.com</a> to review, modify, or delete their minor's information.</p>
+
+      <h2>4. Message Monitoring and Safety</h2>
+      <div class="callout">
+        <p>To protect users — many of whom are minors — <strong>messages sent through the Service are automatically screened</strong>. Messages that our systems flag (for example, attempts to share personal contact information, external links, or off-platform payment arrangements) are blocked and logged for review by our staff.</p>
+      </div>
+      <p>Do not send anything in chat you would not want reviewed for safety purposes.</p>
+
+      <h2>5. How We Share Information</h2>
+      <ul>
+        <li><strong>Service providers (processors):</strong> Supabase (database, authentication, and file hosting) and Stripe (payments and payouts), each acting under their own security and privacy obligations.</li>
+        <li><strong>Other users</strong>, as inherent to the Service: tutors see student first names and session details for their bookings; students see tutor profiles; reviews you post are visible to other users.</li>
+        <li><strong>Legal authorities</strong>, if required by law, subpoena, or to protect the safety of users, the public, or our rights.</li>
+        <li><strong>A successor entity</strong>, in connection with a merger, acquisition, or sale of assets, in which case this Policy continues to apply.</li>
+      </ul>
+      <p>We do not sell or rent personal information to anyone.</p>
+
+      <h2>6. Data Retention and Deletion</h2>
+      <p>We retain your information while your account is active. You may <strong>permanently delete your account at any time</strong> from the Profile tab in the app ("Delete Account"); this deletes your account, profile, sessions, and messages from our production systems. Transaction records may be retained as required for tax, accounting, and legal compliance. Flagged-message safety records may be retained for a reasonable period to protect users and document enforcement actions.</p>
+
+      <h2>7. Security</h2>
+      <p>We use industry-standard safeguards including encrypted connections (TLS), row-level access controls on all database records, and server-side enforcement of payment amounts and permissions. No system is perfectly secure; you use the Service at your own risk, and we encourage you to use a strong, unique password.</p>
+
+      <h2>8. Your Rights</h2>
+      <p>Depending on your jurisdiction (e.g., California residents under the CCPA), you may have the right to request access to, correction of, or deletion of your personal information, and the right to know what categories of information we collect and share. We honor these rights for all users regardless of residence: contact <a href="mailto:kanishksasi1@gmail.com">kanishksasi1@gmail.com</a> or use the in-app deletion feature. We will not discriminate against you for exercising these rights.</p>
+
+      <h2>9. Changes to This Policy</h2>
+      <p>We may update this Policy from time to time. Material changes will be communicated through the app or by email, and the Effective Date above will be updated. Continued use of the Service after changes take effect constitutes acceptance.</p>
+
+      <h2>10. Contact</h2>
+      <p>Bruxel Academy LLC<br />Email: <a href="mailto:kanishksasi1@gmail.com">kanishksasi1@gmail.com</a></p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="copyright" style="border-top:none; margin-top:0;">
+      <span>© 2026 Bruxel Academy LLC. All rights reserved.</span>
+      <span><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="support.html">Support</a></span>
+    </div>
+  </footer>
+
+  <script src="js/scene.js" defer></script>
+</body>
+</html>
