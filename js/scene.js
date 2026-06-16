@@ -55,7 +55,7 @@
     })();
 
     // ---- starfield (3D shell, keeps centre clear so the core reads) ---------
-    var COUNT = reduce ? 420 : 1500;
+    var COUNT = reduce ? 700 : 2800;
     var stars = [];
     for (var i = 0; i < COUNT; i++) {
       var r = 5 + Math.random() * 16;

@@ -160,66 +160,95 @@
     });
   }
 
+  // ================= shared exam chrome (Bluebook-style) =================
+  var crossout = false;
+  function examTop(left, center, over) {
+    return '<div class="exam-top"><div class="et-left">' + left + '</div>' +
+      (center != null ? '<div class="et-center' + (over ? ' over' : '') + '" id="etimer">' + center + '</div>' : '<div class="et-center"></div>') +
+      '<div class="et-right"></div></div>';
+  }
+  function qHead(num, isMarked) {
+    return '<div class="exam-qhead"><div class="qh-left"><span class="qnum">' + num + '</span>' +
+      '<button id="flagbtn" class="flag-btn' + (isMarked ? ' on' : '') + '">' + (isMarked ? '⚑' : '⚐') + ' Mark for Review</button></div>' +
+      '<button id="cobtn" class="tool-btn' + (crossout ? ' on' : '') + '" title="Cross out answer choices"><span style="text-decoration:line-through;letter-spacing:1px">ABC</span></button></div>';
+  }
+  function choicesBlock(cur, sel, rev) {
+    var letters = cur.img ? ["A", "B", "C", "D"] : ["A", "B", "C", "D"].filter(function (l) { return cur.choices[l] != null; });
+    return '<div id="choices">' + letters.map(function (l) {
+      var cls = "choice", isE = (elim[cur.id] || {})[l];
+      if (rev) { if (l === cur.correct) cls += " correct"; else if (sel === l) cls += " wrong"; } else if (sel === l) cls += " sel";
+      if (isE && !rev) cls += " eliminated";
+      var txt = cur.img ? "" : '<div class="ctext">' + cur.choices[l] + '</div>';
+      var strike = (!rev && crossout) ? '<button class="strike" data-strike="' + l + '">' + (isE ? "Undo" : '<span style="text-decoration:line-through">' + l + '</span>') + '</button>' : "";
+      return '<div class="' + cls + '" data-l="' + l + '"' + ((cur.img && !strike) ? ' style="justify-content:center"' : "") + '><div class="ltr">' + l + '</div>' + txt + strike + '</div>';
+    }).join("") + '</div>';
+  }
+  function rationaleBlock(cur, sel) {
+    var ok = sel === cur.correct;
+    return '<div class="rationale"><div style="font-family:var(--head);font-weight:700;color:' + (ok ? "var(--success)" : "var(--text)") + ';margin-bottom:8px">' + (ok ? "✓ Correct" : "Answer: " + cur.correct) + ' · ' + cur.skill + '</div>' + cur.rationale + '</div>';
+  }
+  function examBody(cur, sel, rev) {
+    if (cur.img) {
+      var h = '<img class="qimg" src="data/math/' + cur.id + '_q.png" alt="question">';
+      h += cur.type === "mcq" ? choicesBlock(cur, sel, rev) : '<p class="sub" style="font-size:13px">Student-response question — work it out, then check.</p>';
+      if (rev) h += '<img class="qimg" src="data/math/' + cur.id + '_r.png" alt="answer" style="margin-top:14px">';
+      return h;
+    }
+    var right = '<div class="stem">' + cur.question + '</div>' + choicesBlock(cur, sel, rev) + (rev ? rationaleBlock(cur, sel) : "");
+    if (cur.passage) {
+      return '<div class="split"><div class="pane pane-l"><div class="passage" style="background:none;border:none;padding:0;margin:0">' + cur.passage + '</div></div><div class="pane pane-r">' + right + '</div></div>';
+    }
+    return right;
+  }
+  function bottomBar(left, idx, total, backHTML, nextHTML) {
+    return '<div class="exam-bottom"><div class="eb-left">' + left + '</div>' +
+      '<button id="navtoggle" class="navpill">Question ' + idx + ' of ' + total + ' ▾</button>' +
+      '<div class="eb-right">' + backHTML + nextHTML + '</div></div>' +
+      '<div id="navpop" class="navpop hidden"><h4>Go to question</h4>' +
+      '<div class="np-legend"><span style="color:var(--text)">● current</span><span style="color:var(--amber)">⚑ marked</span><span style="color:var(--indigo-bright)">▣ answered</span></div>' +
+      '<div class="np-grid" id="npgrid"></div></div>';
+  }
+  function fillNav(list, stateFn, jumpFn) {
+    var g = byId("npgrid"); if (!g) return;
+    g.innerHTML = list.map(function (_, i) { return '<button class="qcell ' + stateFn(i) + '" data-i="' + i + '">' + (i + 1) + '</button>'; }).join("");
+    Array.prototype.forEach.call(g.querySelectorAll(".qcell"), function (b) { b.onclick = function () { jumpFn(parseInt(b.dataset.i, 10)); }; });
+  }
+  function wireExam(cur, opts) {
+    byId("flagbtn").onclick = function () { toggleMark(cur.id); opts.rerender(); };
+    byId("cobtn").onclick = function () { crossout = !crossout; opts.rerender(); };
+    var nt = byId("navtoggle"); if (nt) nt.onclick = function () { var p = byId("navpop"); if (p) p.classList.toggle("hidden"); };
+    Array.prototype.forEach.call(document.querySelectorAll("#choices .choice"), function (el) {
+      var l = el.dataset.l;
+      el.onclick = function (e) {
+        if (opts.locked) return;
+        if (e.target.dataset.strike) { var m = elim[cur.id] = elim[cur.id] || {}; if (m[l]) delete m[l]; else { m[l] = 1; if (opts.answers[cur.id] === l) delete opts.answers[cur.id]; } opts.rerender(); return; }
+        if ((elim[cur.id] || {})[l]) return;
+        opts.onSelect(l);
+      };
+    });
+  }
+
   // ================= BANK PRACTICE =================
   var q = [], qi = 0, ans = {}, revealed = {}, elim = {}, elapsed = 0;
   function startBank() { startList(selectionNow()); }
   function startList(list) { if (!list.length) return; q = list; qi = 0; ans = {}; revealed = {}; elim = {}; renderBank(); }
   function renderBank() {
     clearTick(); elapsed = 0;
-    var cur = q[qi], rev = revealed[cur.id], dc = DCOLOR[cur.domain] || "#4F46E5", paceTarget = PACE[cur.domain] || 60;
+    var cur = q[qi], rev = revealed[cur.id], pt = PACE[cur.domain] || 60, spr = cur.img && cur.type === "spr";
+    var nextBtn = rev ? '<button class="eb-btn" id="next">' + (qi < q.length - 1 ? "Next" : "Finish") + '</button>'
+      : (spr ? '<button class="eb-btn" id="reveal">Show answer</button>' : '<button class="eb-btn" id="check"' + (ans[cur.id] ? "" : " disabled") + '>Check</button>');
     app.innerHTML =
-      '<div class="bar"><i style="width:' + ((qi + 1) / q.length * 100) + '%"></i></div>' +
-      '<div class="toolbar">' + (cfg.pace !== "off" ? '<span id="tmr" class="timer">0:00</span>' : '<span>Question ' + (qi + 1) + ' / ' + q.length + '</span>') +
-        '<button id="markbtn" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:' + (marked.has(cur.id) ? "var(--amber)" : "var(--muted)") + ';cursor:pointer;font-size:13px">' + (marked.has(cur.id) ? "★ Marked" : "☆ Mark") + '</button></div>' +
-      '<div class="meta">' + badge(cur.domain, dc, true) + badge(cur.skill, dc, false) + badge(cur.difficulty, FCOLOR[cur.difficulty], false) + '</div>' +
-      bodyHTML(cur, rev) + '<div class="actions" id="acts"></div>';
-    renderActions(cur, rev);
-    byId("markbtn").onclick = function () { toggleMark(cur.id); renderBank(); };
-    if (cfg.pace !== "off" && !rev) tick = setInterval(function () { elapsed++; var t = byId("tmr"); if (!t) return; t.textContent = fmt(elapsed) + (cfg.pace === "pace" ? " / " + fmt(paceTarget) : ""); t.className = "timer" + (cfg.pace === "pace" && elapsed > paceTarget ? " over" : ""); }, 1000);
-  }
-  function bodyHTML(cur, rev) {
-    if (cur.img) {
-      var h = '<img class="qimg" src="data/math/' + cur.id + '_q.png" alt="question">';
-      if (cur.type === "mcq") h += '<div id="choices">' + ["A", "B", "C", "D"].map(function (l) {
-        var cls = "choice", sel = ans[cur.id] === l;
-        if (rev) { if (l === cur.correct) cls += " correct"; else if (sel) cls += " wrong"; } else if (sel) cls += " sel";
-        return '<div class="' + cls + '" data-l="' + l + '" style="justify-content:center"><div class="ltr">' + l + '</div></div>';
-      }).join("") + '</div>';
-      else h += '<p class="sub" style="font-size:13px">Student-response question — work it out, then reveal the answer.</p>';
-      if (rev) h += '<img class="qimg" src="data/math/' + cur.id + '_r.png" alt="answer and rationale" style="margin-top:14px">';
-      return h;
-    }
-    var t = (cur.passage ? '<div class="passage">' + cur.passage + '</div>' : '') + '<div class="stem">' + cur.question + '</div>';
-    t += '<div id="choices">' + ["A", "B", "C", "D"].filter(function (l) { return cur.choices[l] != null; }).map(function (l) {
-      var cls = "choice", sel = ans[cur.id] === l, isE = (elim[cur.id] || {})[l];
-      if (rev) { if (l === cur.correct) cls += " correct"; else if (sel) cls += " wrong"; } else if (sel) cls += " sel";
-      if (isE && !rev) cls += " eliminated";
-      return '<div class="' + cls + '" data-l="' + l + '"><div class="ltr">' + l + '</div><div class="ctext">' + cur.choices[l] + '</div>' + (!rev ? '<button class="elim" data-elim="' + l + '">' + (isE ? "↩" : "✕") + '</button>' : '') + '</div>';
-    }).join("") + '</div>';
-    if (rev) { var ok = ans[cur.id] === cur.correct; t += '<div class="rationale"><div style="font-family:var(--head);font-weight:700;color:' + (ok ? "var(--success)" : "var(--text)") + ';margin-bottom:8px">' + (ok ? "✓ Correct" : "Answer: " + cur.correct) + ' · ' + cur.skill + '</div>' + cur.rationale + '</div>'; }
-    return t;
-  }
-  function renderActions(cur, rev) {
-    var acts = byId("acts"); var spr = cur.img && cur.type === "spr";
-    acts.innerHTML = (qi > 0 ? '<button class="btn ghost sm" id="prev">←</button>' : '') +
-      (rev ? '<button class="btn" id="next">' + (qi < q.length - 1 ? "Next question" : "Finish") + '</button>'
-           : (spr ? '<button class="btn" id="reveal">Show answer</button>' : '<button class="btn" id="check" disabled>Check answer</button>'));
-    if (!rev) wireChoices(cur);
+      examTop(cur.domain + " · " + cur.skill + "  ·  " + cur.difficulty, cfg.pace !== "off" ? "0:00" : null, false) +
+      qHead(qi + 1, marked.has(cur.id)) +
+      examBody(cur, ans[cur.id], rev) +
+      bottomBar("Question Bank", qi + 1, q.length, (qi > 0 ? '<button class="eb-btn ghost" id="prev">Back</button>' : ""), nextBtn);
+    fillNav(q, function (i) { return i === qi ? "cur" : (marked.has(q[i].id) ? "mk" : (revealed[q[i].id] ? "ans" : "")); }, function (i) { qi = i; renderBank(); });
+    wireExam(cur, { locked: rev, answers: ans, rerender: renderBank, onSelect: function (l) { ans[cur.id] = l; renderBank(); } });
     if (byId("prev")) byId("prev").onclick = function () { qi--; renderBank(); };
     if (byId("check")) byId("check").onclick = function () { revealed[cur.id] = true; record(cur.id, ans[cur.id] === cur.correct); renderBank(); };
     if (byId("reveal")) byId("reveal").onclick = function () { revealed[cur.id] = true; attempted.add(cur.id); sv("prepxa_attempted", attempted); renderBank(); };
     if (byId("next")) byId("next").onclick = function () { if (qi < q.length - 1) { qi++; renderBank(); } else renderHome(); };
-  }
-  function wireChoices(cur) {
-    Array.prototype.forEach.call(document.querySelectorAll("#choices .choice"), function (el) {
-      var l = el.dataset.l;
-      el.onclick = function (e) {
-        if (revealed[cur.id]) return;
-        if (e.target.dataset.elim) { var m = elim[cur.id] = elim[cur.id] || {}; if (m[l]) delete m[l]; else { m[l] = 1; if (ans[cur.id] === l) delete ans[cur.id]; } renderBank(); return; }
-        if ((elim[cur.id] || {})[l]) return;
-        ans[cur.id] = l; var c = byId("check"); if (c) c.disabled = false; renderBank();
-      };
-    });
+    if (cfg.pace !== "off" && !rev) tick = setInterval(function () { elapsed++; var t = byId("etimer"); if (!t) return; t.textContent = fmt(elapsed) + (cfg.pace === "pace" ? " / " + fmt(pt) : ""); t.className = "et-center" + (cfg.pace === "pace" && elapsed > pt ? " over" : ""); }, 1000);
   }
 
   // ================= MODULE =================
@@ -227,30 +256,22 @@
   function startModuleForSubject() { var n = SUBJECT === "rw" ? 27 : 22, dur = (SUBJECT === "rw" ? 32 : 35) * 60; startModule(n, dur); }
   function startModule(n, dur) {
     mq = shuffle(S().all.slice()).slice(0, n); mi = 0; mans = {}; remaining = dur; mDur = dur; renderModule();
-    tick = setInterval(function () { remaining--; var t = byId("mtmr"); if (t) { t.textContent = fmt(remaining); t.className = "timer" + (remaining <= 60 ? " over" : ""); } if (remaining <= 0) submitModule(); }, 1000);
+    tick = setInterval(function () { remaining--; var t = byId("etimer"); if (t) { t.textContent = fmt(remaining); t.className = "et-center" + (remaining <= 60 ? " over" : ""); } if (remaining <= 0) submitModule(); }, 1000);
   }
   function renderModule() {
     var cur = mq[mi];
-    var body = cur.img ? '<img class="qimg" src="data/math/' + cur.id + '_q.png" alt="question">' +
-        (cur.type === "mcq" ? '<div id="choices">' + ["A", "B", "C", "D"].map(function (l) { return '<div class="choice' + (mans[cur.id] === l ? " sel" : "") + '" data-l="' + l + '" style="justify-content:center"><div class="ltr">' + l + '</div></div>'; }).join("") + '</div>' : '<p class="sub" style="font-size:13px">Student-response — answer mentally.</p>')
-      : (cur.passage ? '<div class="passage">' + cur.passage + '</div>' : '') + '<div class="stem">' + cur.question + '</div>' +
-        '<div id="choices">' + ["A", "B", "C", "D"].filter(function (l) { return cur.choices[l] != null; }).map(function (l) { return '<div class="choice' + (mans[cur.id] === l ? " sel" : "") + '" data-l="' + l + '"><div class="ltr">' + l + '</div><div class="ctext">' + cur.choices[l] + '</div></div>'; }).join("") + '</div>';
     app.innerHTML =
-      '<div class="toolbar"><span>Q ' + (mi + 1) + ' / ' + mq.length + '</span><span id="mtmr" class="timer">' + fmt(remaining) + '</span>' +
-        '<button id="mmark" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:' + (marked.has(cur.id) ? "var(--amber)" : "var(--muted)") + ';cursor:pointer;font-size:13px">' + (marked.has(cur.id) ? "★" : "☆") + ' Mark</button>' +
-        '<button id="msub" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--indigo-bright);cursor:pointer;font-size:13px">Submit</button></div>' +
-      '<div class="bar"><i style="width:' + ((mi + 1) / mq.length * 100) + '%"></i></div>' + body +
-      '<div class="actions">' + (mi > 0 ? '<button class="btn ghost sm" id="mprev">←</button>' : '') + '<button class="btn" id="mnext">' + (mi < mq.length - 1 ? "Next" : "Review &amp; submit") + '</button></div>' +
-      '<div class="qmap-label">Question map</div><div class="qmap">' + mq.map(function (qq, i) {
-        var st = i === mi ? " cur" : (marked.has(qq.id) ? " mk" : (mans[qq.id] ? " ans" : ""));
-        return '<button class="qcell' + st + '" data-i="' + i + '">' + (i + 1) + '</button>';
-      }).join("") + '</div>';
-    Array.prototype.forEach.call(document.querySelectorAll("#choices .choice"), function (el) { el.onclick = function () { mans[cur.id] = el.dataset.l; renderModule(); }; });
-    Array.prototype.forEach.call(document.querySelectorAll(".qcell"), function (el) { el.onclick = function () { mi = parseInt(el.dataset.i, 10); renderModule(); }; });
-    byId("mmark").onclick = function () { toggleMark(cur.id); renderModule(); };
+      examTop((SUBJECT === "rw" ? "Reading & Writing" : "Math") + " Module", fmt(remaining), remaining <= 60) +
+      qHead(mi + 1, marked.has(cur.id)) +
+      examBody(cur, mans[cur.id], false) +
+      bottomBar('<button id="msub" class="linklike">Submit module</button>', mi + 1, mq.length,
+        (mi > 0 ? '<button class="eb-btn ghost" id="mprev">Back</button>' : ""),
+        '<button class="eb-btn" id="mnext">' + (mi < mq.length - 1 ? "Next" : "Submit") + '</button>');
+    fillNav(mq, function (i) { return i === mi ? "cur" : (marked.has(mq[i].id) ? "mk" : (mans[mq[i].id] ? "ans" : "")); }, function (i) { mi = i; renderModule(); });
+    wireExam(cur, { locked: false, answers: mans, rerender: renderModule, onSelect: function (l) { mans[cur.id] = l; renderModule(); } });
     if (byId("mprev")) byId("mprev").onclick = function () { mi--; renderModule(); };
-    byId("mnext").onclick = function () { if (mi < mq.length - 1) { mi++; renderModule(); } else confirmSubmit(); };
-    byId("msub").onclick = confirmSubmit;
+    if (byId("mnext")) byId("mnext").onclick = function () { if (mi < mq.length - 1) { mi++; renderModule(); } else confirmSubmit(); };
+    if (byId("msub")) byId("msub").onclick = confirmSubmit;
   }
   function confirmSubmit() { var n = Object.keys(mans).length; if (n < mq.length && !confirm("Answered " + n + " of " + mq.length + ". Unanswered count as incorrect. Submit?")) return; submitModule(); }
   function submitModule() { clearTick(); mq.forEach(function (qq) { if (mans[qq.id]) record(qq.id, mans[qq.id] === qq.correct); }); renderSummary(); }
