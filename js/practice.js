@@ -164,6 +164,24 @@
     });
   }
 
+  // Grid-in answers accept equivalent numeric forms: "0.5" == ".5" == "1/2".
+  function sprValue(s) {
+    s = String(s).trim();
+    if (s === "") return null;
+    if (!isNaN(Number(s))) return Number(s);
+    var p = s.split("/");
+    if (p.length === 2 && !isNaN(Number(p[0])) && Number(p[1]) !== 0) return Number(p[0]) / Number(p[1]);
+    return null;
+  }
+  function answerOK(qq, given) {
+    if (given == null || given === "") return false;
+    if (qq.type !== "spr") return given === qq.correct;
+    var a = String(given).trim(), b = String(qq.correct).trim();
+    if (a.toLowerCase() === b.toLowerCase()) return true;
+    var x = sprValue(a), y = sprValue(b);
+    return x !== null && y !== null && Math.abs(x - y) < 0.001;
+  }
+
   // ================= shared exam chrome (Bluebook-style) =================
   var crossout = false;
   function examTop(left, center, over) {
@@ -198,7 +216,7 @@
       if (rev) h += '<img class="qimg" src="data/math/' + cur.id + '_r.png" alt="answer" style="margin-top:14px">';
       return h;
     }
-    var right = '<div class="stem">' + cur.question + '</div>' + (cur.type === "spr" ? '<p class="sub" style="font-size:13px">Student-response question — work it out, then check.</p>' : choicesBlock(cur, sel, rev)) + (rev ? rationaleBlock(cur, sel) : "");
+    var right = '<div class="stem">' + cur.question + '</div>' + (cur.type === "spr" ? '<div class="spr-wrap"><label class="sub" style="display:block;font-size:13px;margin-bottom:6px">Your answer</label>' + '<input id="spr" class="spr-input" type="text" inputmode="decimal" autocomplete="off" value="' + ((sel || "").replace(/"/g, "&quot;")) + '"' + (rev ? " disabled" : "") + '>' + (rev ? '<div class="sub" style="font-size:13px;margin-top:6px;color:' + (answerOK(cur, sel) ? "var(--success)" : "var(--error)") + '">' + (answerOK(cur, sel) ? "✓ Correct" : "Answer: " + cur.correct) + '</div>' : '<div class="sub" style="font-size:12px;margin-top:6px">Number, decimal, or fraction (e.g. 5, 0.75, 3/4).</div>') + '</div>' : choicesBlock(cur, sel, rev)) + (rev ? rationaleBlock(cur, sel) : "");
     if (cur.passage) {
       return '<div class="split"><div class="pane pane-l"><div class="passage" style="background:none;border:none;padding:0;margin:0">' + cur.passage + '</div></div><div class="pane pane-r">' + right + '</div></div>';
     }
@@ -218,6 +236,13 @@
     Array.prototype.forEach.call(g.querySelectorAll(".qcell"), function (b) { b.onclick = function () { jumpFn(parseInt(b.dataset.i, 10)); }; });
   }
   function wireExam(cur, opts) {
+    var si = byId("spr");
+    if (si && !opts.locked) {
+      si.oninput = function () {
+        opts.answers[cur.id] = si.value;
+        var cb = byId("check"); if (cb) cb.disabled = !si.value.trim();
+      };
+    }
     byId("flagbtn").onclick = function () { toggleMark(cur.id); opts.rerender(); };
     byId("cobtn").onclick = function () { crossout = !crossout; opts.rerender(); };
     var nt = byId("navtoggle"); if (nt) nt.onclick = function () { var p = byId("navpop"); if (p) p.classList.toggle("hidden"); };
@@ -240,7 +265,7 @@
     clearTick(); elapsed = 0;
     var cur = q[qi], rev = revealed[cur.id], pt = PACE[cur.domain] || 60, spr = cur.type === "spr";
     var nextBtn = rev ? '<button class="eb-btn" id="next">' + (qi < q.length - 1 ? "Next" : "Finish") + '</button>'
-      : (spr ? '<button class="eb-btn" id="reveal">Show answer</button>' : '<button class="eb-btn" id="check"' + (ans[cur.id] ? "" : " disabled") + '>Check</button>');
+      : '<button class="eb-btn" id="check"' + (ans[cur.id] ? "" : " disabled") + '>Check</button>';
     app.innerHTML =
       examTop(cur.domain + " · " + cur.skill + "  ·  " + cur.difficulty, cfg.pace !== "off" ? "0:00" : null, false) +
       qHead(qi + 1, marked.has(cur.id)) +
@@ -249,7 +274,7 @@
     fillNav(q, function (i) { return i === qi ? "cur" : (marked.has(q[i].id) ? "mk" : (revealed[q[i].id] ? "ans" : "")); }, function (i) { qi = i; renderBank(); });
     wireExam(cur, { locked: rev, answers: ans, rerender: renderBank, onSelect: function (l) { ans[cur.id] = l; renderBank(); } });
     if (byId("prev")) byId("prev").onclick = function () { qi--; renderBank(); };
-    if (byId("check")) byId("check").onclick = function () { revealed[cur.id] = true; record(cur.id, ans[cur.id] === cur.correct); renderBank(); };
+    if (byId("check")) byId("check").onclick = function () { if (byId("spr")) ans[cur.id] = byId("spr").value; revealed[cur.id] = true; record(cur.id, answerOK(cur, ans[cur.id])); renderBank(); };
     if (byId("reveal")) byId("reveal").onclick = function () { revealed[cur.id] = true; attempted.add(cur.id); sv("prepxa_attempted", attempted); renderBank(); };
     if (byId("next")) byId("next").onclick = function () { if (qi < q.length - 1) { qi++; renderBank(); } else renderHome(); };
     if (cfg.pace !== "off" && !rev) tick = setInterval(function () { elapsed++; var t = byId("etimer"); if (!t) return; t.textContent = fmt(elapsed) + (cfg.pace === "pace" ? " / " + fmt(pt) : ""); t.className = "et-center" + (cfg.pace === "pace" && elapsed > pt ? " over" : ""); }, 1000);
@@ -280,10 +305,10 @@
   function confirmSubmit() { var n = Object.keys(mans).length; if (n < mq.length && !confirm("Answered " + n + " of " + mq.length + ". Unanswered count as incorrect. Submit?")) return; submitModule(); }
   function submitModule() { clearTick(); mq.forEach(function (qq) { if (mans[qq.id]) record(qq.id, mans[qq.id] === qq.correct); }); renderSummary(); }
   function renderSummary() {
-    var gradable = mq.filter(function (qq) { return qq.type !== "spr"; });
-    var ok = gradable.filter(function (qq) { return mans[qq.id] === qq.correct; }).length;
+    var gradable = mq;
+    var ok = gradable.filter(function (qq) { return answerOK(qq, mans[qq.id]); }).length;
     var pct = gradable.length ? Math.round(ok / gradable.length * 100) : 0, used = mDur - remaining, bySkill = {};
-    gradable.forEach(function (qq) { if (mans[qq.id] !== qq.correct) bySkill[qq.skill] = (bySkill[qq.skill] || 0) + 1; });
+    gradable.forEach(function (qq) { if (!answerOK(qq, mans[qq.id])) bySkill[qq.skill] = (bySkill[qq.skill] || 0) + 1; });
     var topics = Object.keys(bySkill).map(function (k) { return [k, bySkill[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
     app.innerHTML = '<span class="kicker">Score report</span>' +
       '<div class="card" style="text-align:center;margin-bottom:18px"><div class="score-big">' + pct + '%</div><div style="font-family:var(--head);font-weight:700;margin-top:6px">' + ok + ' of ' + gradable.length + ' correct</div><div class="sub" style="margin:6px 0 0">' + (SUBJECT === "rw" ? "Reading & Writing" : "Math") + ' · ' + fmt(used) + ' used</div></div>' +
@@ -293,15 +318,15 @@
     byId("done").onclick = renderHome;
   }
   function reviewItem(qq, n) {
-    var chosen = mans[qq.id], spr = qq.type === "spr", ok = chosen === qq.correct;
-    var icon = spr ? '<span style="color:var(--muted)">•</span>' : (ok ? '<span style="color:var(--success)">✓</span>' : (chosen ? '<span style="color:var(--error)">✕</span>' : '<span style="color:var(--muted)">–</span>'));
+    var chosen = mans[qq.id], spr = qq.type === "spr", ok = answerOK(qq, chosen);
+    var icon = ok ? '<span style="color:var(--success)">✓</span>' : (chosen ? '<span style="color:var(--error)">✕</span>' : '<span style="color:var(--muted)">–</span>');
     var inner;
     if (qq.img) inner = '<img class="qimg" src="data/math/' + qq.id + '_q.png"><img class="qimg" src="data/math/' + qq.id + '_r.png" style="margin-top:10px">';
     else {
       var ch = ["A", "B", "C", "D"].filter(function (l) { return qq.choices[l] != null; }).map(function (l) { var col = l === qq.correct ? "var(--success)" : (l === chosen ? "var(--error)" : "var(--muted)"); return '<div style="color:' + col + ';margin-bottom:4px"><b>' + l + '.</b> ' + qq.choices[l] + '</div>'; }).join("");
       inner = (qq.passage ? '<div class="passage" style="font-size:14px">' + qq.passage + '</div>' : '') + '<div class="stem" style="font-size:15px">' + qq.question + '</div>' + ch + '<div class="rationale" style="margin-top:10px">' + qq.rationale + '</div>';
     }
-    return '<details class="review"><summary>' + icon + '<span style="flex:1"><b style="font-weight:600">Q' + n + '</b> · ' + qq.skill + ' · ' + qq.difficulty + '</span>' + (spr ? '' : '<span style="color:var(--muted);font-size:13px">You: ' + (chosen || "–") + ' / Ans: ' + qq.correct + '</span>') + '</summary><div class="body">' + inner + '</div></details>';
+    return '<details class="review"><summary>' + icon + '<span style="flex:1"><b style="font-weight:600">Q' + n + '</b> · ' + qq.skill + ' · ' + qq.difficulty + '</span>' + '<span style="color:var(--muted);font-size:13px">You: ' + (chosen || "–") + ' / Ans: ' + qq.correct + '</span>' + '</summary><div class="body">' + inner + '</div></details>';
   }
 
   // ---- shared ----
