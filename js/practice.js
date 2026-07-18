@@ -44,7 +44,7 @@
     fetch("data/math-questions.json").then(function (r) { return r.json(); }).catch(function () { return []; })
   ]).then(function (res) {
     res[0].forEach(function (q) { q.subject = "rw"; });
-    res[1].forEach(function (q) { q.subject = "math"; q.img = true; });
+    res[1].forEach(function (q) { q.subject = "math"; q.img = !q.question; });
     DATA.rw = buildSubject(res[0], RW_ORDER);
     DATA.math = buildSubject(res[1], MATH_ORDER);
     renderHome();
@@ -60,7 +60,7 @@
     app.innerHTML =
       '<span class="kicker">Free practice</span>' +
       '<h1>Digital SAT practice</h1>' +
-      '<p class="sub">' + (DATA.rw.all.length + DATA.math.all.length) + ' official-style questions · no sign-up, free. Progress saves on this device.</p>' +
+      '<p class="sub">' + (DATA.rw.all.length + DATA.math.all.length) + ' original Prepxa-written questions · no sign-up, free. Progress saves on this device.</p>' +
       subjectToggle() +
       '<div class="card" style="display:flex;gap:0;margin:0 0 18px;text-align:center">' +
         stat(attempted.size, "Attempted", "var(--text)") + dv() + stat(correct.size, "Correct", "var(--success)") +
@@ -70,7 +70,11 @@
       modeCard("module", "⏱️", "rgba(245,158,11,.16)", "#F59E0B", "Module Test",
         SUBJECT === "rw" ? "Timed: 27 questions in 32 minutes, then a score report." : "Timed: 22 questions in 35 minutes, then a score report.") +
       (w.size ? rev("redo", "↺", "#F87171", "Redo wrong answers", w.size) : "") +
-      (marked.size ? rev("mk", "★", "#F59E0B", "Marked for review", marked.size) : "");
+      (marked.size ? rev("mk", "★", "#F59E0B", "Marked for review", marked.size) : "") +
+      '<a class="card" style="display:flex;align-items:center;gap:14px;margin-top:18px;text-decoration:none" href="https://satsuitequestionbank.collegeboard.org" target="_blank" rel="noopener">' +
+        '<div class="icon" style="background:rgba(59,130,246,.16);margin:0">🏛️</div>' +
+        '<div style="flex:1"><div style="font-family:var(--head);font-weight:700;color:var(--text)">Official SAT Question Bank</div>' +
+        '<div class="sub" style="margin:2px 0 0;font-size:13px">Thousands of official questions from College Board — free on their site. ↗</div></div></a>';
     byId("sub-rw").onclick = function () { SUBJECT = "rw"; cfg.skills = null; cfg.expanded = null; renderHome(); };
     byId("sub-math").onclick = function () { SUBJECT = "math"; cfg.skills = null; cfg.expanded = null; renderHome(); };
     byId("m-bank").onclick = renderBankSetup;
@@ -194,7 +198,7 @@
       if (rev) h += '<img class="qimg" src="data/math/' + cur.id + '_r.png" alt="answer" style="margin-top:14px">';
       return h;
     }
-    var right = '<div class="stem">' + cur.question + '</div>' + choicesBlock(cur, sel, rev) + (rev ? rationaleBlock(cur, sel) : "");
+    var right = '<div class="stem">' + cur.question + '</div>' + (cur.type === "spr" ? '<p class="sub" style="font-size:13px">Student-response question — work it out, then check.</p>' : choicesBlock(cur, sel, rev)) + (rev ? rationaleBlock(cur, sel) : "");
     if (cur.passage) {
       return '<div class="split"><div class="pane pane-l"><div class="passage" style="background:none;border:none;padding:0;margin:0">' + cur.passage + '</div></div><div class="pane pane-r">' + right + '</div></div>';
     }
@@ -234,7 +238,7 @@
   function startList(list) { if (!list.length) return; q = list; qi = 0; ans = {}; revealed = {}; elim = {}; renderBank(); }
   function renderBank() {
     clearTick(); elapsed = 0;
-    var cur = q[qi], rev = revealed[cur.id], pt = PACE[cur.domain] || 60, spr = cur.img && cur.type === "spr";
+    var cur = q[qi], rev = revealed[cur.id], pt = PACE[cur.domain] || 60, spr = cur.type === "spr";
     var nextBtn = rev ? '<button class="eb-btn" id="next">' + (qi < q.length - 1 ? "Next" : "Finish") + '</button>'
       : (spr ? '<button class="eb-btn" id="reveal">Show answer</button>' : '<button class="eb-btn" id="check"' + (ans[cur.id] ? "" : " disabled") + '>Check</button>');
     app.innerHTML =
@@ -276,7 +280,7 @@
   function confirmSubmit() { var n = Object.keys(mans).length; if (n < mq.length && !confirm("Answered " + n + " of " + mq.length + ". Unanswered count as incorrect. Submit?")) return; submitModule(); }
   function submitModule() { clearTick(); mq.forEach(function (qq) { if (mans[qq.id]) record(qq.id, mans[qq.id] === qq.correct); }); renderSummary(); }
   function renderSummary() {
-    var gradable = mq.filter(function (qq) { return !(qq.img && qq.type === "spr"); });
+    var gradable = mq.filter(function (qq) { return qq.type !== "spr"; });
     var ok = gradable.filter(function (qq) { return mans[qq.id] === qq.correct; }).length;
     var pct = gradable.length ? Math.round(ok / gradable.length * 100) : 0, used = mDur - remaining, bySkill = {};
     gradable.forEach(function (qq) { if (mans[qq.id] !== qq.correct) bySkill[qq.skill] = (bySkill[qq.skill] || 0) + 1; });
@@ -289,7 +293,7 @@
     byId("done").onclick = renderHome;
   }
   function reviewItem(qq, n) {
-    var chosen = mans[qq.id], spr = qq.img && qq.type === "spr", ok = chosen === qq.correct;
+    var chosen = mans[qq.id], spr = qq.type === "spr", ok = chosen === qq.correct;
     var icon = spr ? '<span style="color:var(--muted)">•</span>' : (ok ? '<span style="color:var(--success)">✓</span>' : (chosen ? '<span style="color:var(--error)">✕</span>' : '<span style="color:var(--muted)">–</span>'));
     var inner;
     if (qq.img) inner = '<img class="qimg" src="data/math/' + qq.id + '_q.png"><img class="qimg" src="data/math/' + qq.id + '_r.png" style="margin-top:10px">';
