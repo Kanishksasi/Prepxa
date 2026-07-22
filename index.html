@@ -9,7 +9,7 @@
   <meta property="og:description" content="Verified tutors. Secure payments. Safe messaging. Book your first session in minutes." />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0B0D14" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230B0D14'/><text x='40' y='70' font-size='56' font-family='Helvetica,Arial,sans-serif' font-weight='bold' fill='white' text-anchor='middle'>P</text><g stroke='%23F59E0B' stroke-width='7' stroke-linecap='round'><line x1='60' y1='56' x2='86' y2='82'/><line x1='60' y1='82' x2='86' y2='56'/><line x1='86' y1='56' x2='74' y2='57'/><line x1='86' y1='56' x2='85' y2='68'/></g></svg>" /><rect width='100' height='100' rx='26' fill='%234F46E5'/><text x='50' y='73' font-size='62' font-family='Helvetica,Arial,sans-serif' font-weight='bold' fill='white' text-anchor='middle'>P</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230B0D14'/><text x='40' y='70' font-size='56' font-family='Helvetica,Arial,sans-serif' font-weight='bold' fill='white' text-anchor='middle'>P</text><g stroke='%23F59E0B' stroke-width='7' stroke-linecap='round'><line x1='60' y1='56' x2='86' y2='82'/><line x1='60' y1='82' x2='86' y2='56'/><line x1='86' y1='56' x2='74' y2='57'/><line x1='86' y1='56' x2='85' y2='68'/></g></svg>" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -143,70 +143,11 @@ a:focus-visible, .btn:focus-visible, summary:focus-visible, details:focus-within
 .phone-frame { position:relative; border-radius:46px; padding:11px; background:linear-gradient(160deg,#272A35,#0B0C11); box-shadow:0 45px 90px -25px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.07); }
 .phone-frame::after { content:""; position:absolute; top:20px; left:50%; transform:translateX(-50%); width:84px; height:23px; background:#000; border-radius:13px; z-index:6; }
 .phone-screen { position:relative; border-radius:36px; overflow:hidden; height:580px; background:#F3F4F6; color:#111827; font-family:var(--font-body); line-height:1.45; display:flex; flex-direction:column; }
+/* Real app screenshots. They already contain the device's own Dynamic Island,
+   so .shot suppresses the frame's drawn notch to avoid a doubled cutout. */
+.phone-frame.shot::after { display:none; }
+.phone-screen img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
 .phone-cap { text-align:center; margin-top:20px; font-family:var(--font-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--text-faint); }
-.app-status { display:flex; justify-content:space-between; align-items:center; padding:15px 24px 4px; font-size:13px; font-weight:800; color:#111827; }
-.app-sig { display:inline-flex; gap:5px; align-items:center; }
-.app-sig i { width:4px; height:9px; background:#111827; border-radius:1px; display:inline-block; }
-.app-sig u { width:22px; height:11px; border:1.5px solid #111827; border-radius:3px; display:inline-block; position:relative; text-decoration:none; }
-.app-sig u::after { content:""; position:absolute; top:1.5px; left:1.5px; bottom:1.5px; width:62%; background:#111827; border-radius:1px; }
-.app-body { flex:1; overflow:hidden; padding:4px 15px 0; }
-.app-title { font-family:var(--font-head); font-size:25px; font-weight:800; letter-spacing:-0.02em; margin:6px 4px 12px; color:#111827; }
-.app-search { background:#fff; border:1px solid #E5E7EB; border-radius:13px; padding:11px 14px; font-size:12.5px; color:#9CA3AF; margin-bottom:12px; }
-.app-chips { display:flex; gap:7px; margin-bottom:14px; }
-.app-chip { font-size:12px; font-weight:600; padding:7px 14px; border-radius:20px; background:#fff; border:1px solid #E5E7EB; color:#6B7280; }
-.app-chip.on { background:#4F46E5; border-color:#4F46E5; color:#fff; }
-.app-meta { display:flex; justify-content:space-between; font-size:11.5px; color:#6B7280; margin:0 2px 12px; }
-.app-sort { color:#4F46E5; font-weight:600; }
-.app-tcard { background:#fff; border-radius:18px; padding:15px; box-shadow:0 6px 18px rgba(17,24,39,.06); margin-bottom:12px; }
-.app-trow { display:flex; gap:12px; align-items:center; }
-.app-avatar { width:50px; height:50px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-weight:800; font-size:17px; color:#fff; background:linear-gradient(135deg,#4F46E5,#7C3AED); }
-.app-avatar.alt { background:linear-gradient(135deg,#F59E0B,#EF4444); }
-.app-avatar.sm { width:42px; height:42px; font-size:15px; }
-.app-tinfo { flex:1; min-width:0; }
-.app-tname { display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
-.app-tname span { font-family:var(--font-head); font-weight:700; font-size:15px; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.app-tname b { font-family:var(--font-head); font-weight:800; font-size:15px; color:#4F46E5; flex:0 0 auto; }
-.app-tsub { font-size:12px; color:#6B7280; margin-top:1px; }
-.app-stars { font-size:12px; color:#F59E0B; margin-top:3px; letter-spacing:1px; }
-.app-stars span { color:#6B7280; letter-spacing:normal; }
-.app-score { display:inline-block; font-size:11.5px; font-weight:700; color:#4F46E5; background:rgba(79,70,229,.08); padding:5px 10px; border-radius:8px; margin:11px 0 9px; }
-.app-bio { font-size:12.5px; color:#6B7280; margin-bottom:11px; }
-.app-badges { display:flex; gap:6px; margin-bottom:12px; }
-.app-badge { font-size:11px; font-weight:600; color:#374151; background:#F3F4F6; border:1px solid #E5E7EB; padding:4px 10px; border-radius:7px; }
-.app-tfoot { display:flex; justify-content:space-between; font-size:11.5px; color:#6B7280; padding-top:11px; border-top:1px solid #F1F2F4; }
-.app-tfoot b { color:#4F46E5; font-weight:700; }
-.app-seg { display:flex; background:#E9EAEE; border-radius:11px; padding:3px; margin-bottom:14px; }
-.app-seg span { flex:1; text-align:center; font-size:12.5px; font-weight:600; padding:8px; border-radius:8px; color:#6B7280; }
-.app-seg span.on { background:#fff; color:#111827; box-shadow:0 1px 3px rgba(0,0,0,.1); }
-.app-scard { background:#fff; border-radius:18px; padding:15px; box-shadow:0 6px 18px rgba(17,24,39,.06); margin-bottom:12px; }
-.app-srow { display:flex; gap:11px; align-items:center; margin-bottom:11px; }
-.app-sname { font-family:var(--font-head); font-weight:700; font-size:14.5px; color:#111827; }
-.app-pills { display:flex; gap:7px; margin-bottom:11px; }
-.app-pill { font-size:11px; font-weight:700; padding:4px 10px; border-radius:7px; }
-.app-pill.green { color:#047857; background:#D1FAE5; }
-.app-pill.amber { color:#B45309; background:#FEF3C7; }
-.app-pill.paid { color:#4F46E5; background:rgba(79,70,229,.1); }
-.app-sdate { font-size:12.5px; color:#374151; margin-bottom:13px; }
-.app-join { width:100%; border:none; background:#4F46E5; color:#fff; font-family:var(--font-head); font-weight:700; font-size:14px; padding:12px; border-radius:12px; cursor:default; }
-.app-await { width:100%; text-align:center; font-size:12px; color:#6B7280; padding:11px; background:#F9FAFB; border:1px solid #EFF0F2; border-radius:11px; }
-.app-earn { background:linear-gradient(140deg,#4F46E5,#7C3AED); border-radius:20px; padding:22px; color:#fff; margin-bottom:14px; }
-.app-earn-label { font-size:10.5px; letter-spacing:.16em; opacity:.85; font-weight:700; }
-.app-earn-big { font-family:var(--font-head); font-size:37px; font-weight:800; margin:6px 0 4px; letter-spacing:-0.02em; }
-.app-earn-pend { font-size:12px; color:#FCD34D; font-weight:600; }
-.app-statrow { display:flex; gap:9px; margin-bottom:16px; }
-.app-statrow div { flex:1; background:#fff; border-radius:14px; padding:13px 8px; text-align:center; box-shadow:0 4px 14px rgba(17,24,39,.05); }
-.app-statrow b { display:block; font-family:var(--font-head); font-size:19px; font-weight:800; color:#111827; }
-.app-statrow span { font-size:10px; color:#6B7280; }
-.app-list-title { font-family:var(--font-head); font-weight:700; font-size:14px; margin:0 2px 9px; }
-.app-erow { display:flex; justify-content:space-between; align-items:center; background:#fff; border-radius:13px; padding:11px 14px; margin-bottom:9px; box-shadow:0 3px 10px rgba(17,24,39,.04); }
-.app-erow .app-sname { font-size:13px; }
-.app-erow .app-tsub { margin-top:0; }
-.app-erow b.green { color:#10B981; font-family:var(--font-head); font-weight:800; font-size:14px; }
-.app-stripe { width:100%; border:1px solid #E5E7EB; background:#fff; color:#4F46E5; font-weight:700; font-size:12.5px; padding:11px; border-radius:12px; margin-top:2px; }
-.app-tabs { display:flex; justify-content:space-around; padding:11px 8px 16px; background:#fff; border-top:1px solid #EDEEF1; }
-.app-tabs span { display:flex; flex-direction:column; align-items:center; gap:3px; font-size:17px; color:#C4C7CF; }
-.app-tabs span i { font-style:normal; font-size:9.5px; font-weight:600; }
-.app-tabs span.on { color:#4F46E5; }
 @media (max-width:640px){ .phone { width:250px; } .phone-screen { height:560px; } }
   </style>
 </head>
@@ -314,77 +255,18 @@ a:focus-visible, .btn:focus-visible, summary:focus-visible, details:focus-within
         <p class="section-sub" style="margin:0 auto 56px;">Browse, book, meet, and review &#8212; every step lives in one beautifully simple iOS app.</p>
       </div>
       <div class="screens-row reveal">
-        <div class="phone"><div class="phone-frame"><div class="phone-screen">
-<div class="app-status"><span>9:41</span><span class="app-sig"><i></i><i style="height:7px"></i><i style="height:5px"></i><u></u></span></div>
-<div class="app-body">
-  <div class="app-title">Find a Tutor</div>
-  <div class="app-search">&#128269;&nbsp; Search by name, subject, or school&#8230;</div>
-  <div class="app-chips"><span class="app-chip on">All</span><span class="app-chip">SAT</span><span class="app-chip">ACT</span><span class="app-chip">AP</span></div>
-  <div class="app-meta"><span>14 tutors available</span><span class="app-sort">Top rated &#8964;</span></div>
-  <div class="app-tcard">
-    <div class="app-trow"><div class="app-avatar">SC</div>
-      <div class="app-tinfo">
-        <div class="app-tname"><span>Sarah Chen</span><b>$65/hr</b></div>
-        <div class="app-tsub">Stanford University</div>
-        <div class="app-stars">&#9733;&#9733;&#9733;&#9733;&#9733; <span>4.9 (47 reviews)</span></div>
-      </div></div>
-    <div class="app-score">SAT 1580 &#183; ACT 35</div>
-    <div class="app-bio">Perfect-score SAT tutor. I focus on the exact question patterns that move your score the fastest.</div>
-    <div class="app-badges"><span class="app-badge">SAT</span><span class="app-badge">ACT</span><span class="app-badge">Math</span></div>
-    <div class="app-tfoot"><span>&#128197; 128 sessions</span><b>View Profile &#8594;</b></div>
-  </div>
-  <div class="app-tcard">
-    <div class="app-trow"><div class="app-avatar alt">MJ</div>
-      <div class="app-tinfo">
-        <div class="app-tname"><span>Marcus Johnson</span><b>$50/hr</b></div>
-        <div class="app-tsub">MIT</div>
-        <div class="app-stars">&#9733;&#9733;&#9733;&#9733;&#9733; <span>5.0 (31 reviews)</span></div>
-      </div></div>
-  </div>
-</div>
-<div class="app-tabs"><span class="on">◎<i>Tutors</i></span><span>◷<i>Sessions</i></span><span>✉<i>Messages</i></span><span>☺<i>Profile</i></span></div>
-</div></div><div class="phone-cap">Browse verified tutors</div></div>
-        <div class="phone"><div class="phone-frame"><div class="phone-screen">
-<div class="app-status"><span>9:41</span><span class="app-sig"><i></i><i style="height:7px"></i><i style="height:5px"></i><u></u></span></div>
-<div class="app-body">
-  <div class="app-title">My Sessions</div>
-  <div class="app-seg"><span class="on">Upcoming</span><span>Past</span></div>
-  <div class="app-scard">
-    <div class="app-srow"><div class="app-avatar sm">SC</div><div><div class="app-sname">Sarah Chen</div><div class="app-tsub">SAT Prep &#183; 60 min</div></div></div>
-    <div class="app-pills"><span class="app-pill green">Confirmed</span><span class="app-pill paid">&#10003; Paid</span></div>
-    <div class="app-sdate">&#128197; Tomorrow &#183; 4:00 PM</div>
-    <button class="app-join">&#9654;&nbsp; Join Session</button>
-  </div>
-  <div class="app-scard">
-    <div class="app-srow"><div class="app-avatar alt sm">MJ</div><div><div class="app-sname">Marcus Johnson</div><div class="app-tsub">ACT Math &#183; 90 min</div></div></div>
-    <div class="app-pills"><span class="app-pill amber">Pending</span><span class="app-pill paid">&#10003; Paid</span></div>
-    <div class="app-sdate">&#128197; Sat, Jun 14 &#183; 1:00 PM</div>
-    <div class="app-await">Awaiting tutor confirmation &#183; refunded if declined</div>
-  </div>
-</div>
-<div class="app-tabs"><span>◎<i>Tutors</i></span><span class="on">◷<i>Sessions</i></span><span>✉<i>Messages</i></span><span>☺<i>Profile</i></span></div>
-</div></div><div class="phone-cap">Book &amp; join in one tap</div></div>
-        <div class="phone"><div class="phone-frame"><div class="phone-screen">
-<div class="app-status"><span>9:41</span><span class="app-sig"><i></i><i style="height:7px"></i><i style="height:5px"></i><u></u></span></div>
-<div class="app-body">
-  <div class="app-title">Earnings</div>
-  <div class="app-earn">
-    <div class="app-earn-label">AVAILABLE BALANCE</div>
-    <div class="app-earn-big">$1,248.00</div>
-    <div class="app-earn-pend">+ $192.00 from upcoming paid sessions</div>
-  </div>
-  <div class="app-statrow">
-    <div><b>80%</b><span>Your share</span></div>
-    <div><b>24</b><span>Sessions</span></div>
-    <div><b>4.9</b><span>Rating</span></div>
-  </div>
-  <div class="app-list-title">Recent payouts</div>
-  <div class="app-erow"><div><div class="app-sname">SAT Prep &#183; Sarah C.</div><div class="app-tsub">Jun 10</div></div><b class="green">+$48.00</b></div>
-  <div class="app-erow"><div><div class="app-sname">ACT Math &#183; David L.</div><div class="app-tsub">Jun 8</div></div><b class="green">+$60.00</b></div>
-  <button class="app-stripe">Open Stripe dashboard &#8599;</button>
-</div>
-<div class="app-tabs"><span>◷<i>Sessions</i></span><span class="on">＄<i>Earnings</i></span><span>✉<i>Messages</i></span><span>☺<i>Profile</i></span></div>
-</div></div><div class="phone-cap">Tutors track every payout</div></div>
+        <div class="phone"><div class="phone-frame shot"><div class="phone-screen">
+          <img src="img/app-home.jpg" width="620" height="1342" loading="lazy" decoding="async"
+               alt="Prepxa student home screen showing session progress, top tutors, and free study resources" />
+        </div></div><div class="phone-cap">Your prep, at a glance</div></div>
+        <div class="phone"><div class="phone-frame shot"><div class="phone-screen">
+          <img src="img/app-find-tutor.jpg" width="620" height="1342" loading="lazy" decoding="async"
+               alt="Prepxa Find a Tutor screen with subject filters and a verified tutor profile card" />
+        </div></div><div class="phone-cap">Browse verified tutors</div></div>
+        <div class="phone"><div class="phone-frame shot"><div class="phone-screen">
+          <img src="img/app-earnings.jpg" width="620" height="1342" loading="lazy" decoding="async"
+               alt="Prepxa tutor earnings screen showing the transparent 20 percent platform fee breakdown" />
+        </div></div><div class="phone-cap">Transparent tutor payouts</div></div>
       </div>
     </div>
   </section>
@@ -507,7 +389,7 @@ a:focus-visible, .btn:focus-visible, summary:focus-visible, details:focus-within
         </p>
         <a class="btn" href="mailto:kanishksasi1@gmail.com?subject=Notify%20me%20at%20launch">Get notified at launch</a>
         <!-- After App Store approval, replace the line above with your badge:
-        <a href="https://apps.apple.com/app/YOUR_APP_ID"><img src="img/app-store-badge.svg" alt="Download on the App Store" height="54" /></a>
+        <a href="https://apps.apple.com/app/id6780896620"><img src="img/app-store-badge.svg" alt="Download on the App Store" height="54" /></a>
         -->
       </div>
     </div>
